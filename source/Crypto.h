@@ -31,10 +31,10 @@ private:
     
 public:
 
-    cryptography(int iter, std::string* password, std::string* safeValue);
+    cryptography(int iter, std::string* password);
     cryptography();
     
-    bool login(int iter, const std::string& keyFile, std::string* password, std::string* safeValue);
+    bool login(int iter, const std::string& keyFile, std::string* password);
 
     std::string encodedHex(CryptoPP::SecByteBlock key);
     std::string encodedHex(std::string key);

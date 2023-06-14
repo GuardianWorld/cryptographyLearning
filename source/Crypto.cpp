@@ -1,34 +1,24 @@
 #include "Crypto.h"
 
-cryptography::cryptography(int iter, std::string* password, std::string* safeValue):
+cryptography::cryptography(int iter, std::string* password):
 saltKey(generateSalt(S256)),
 privKey(generateKey(*password, S256, iter)){
     iterations = iter;
     std::fill(password->begin(), password->end(), 0);
-    CryptoPP::SecByteBlock tSafeKey = generateKey(*safeValue, S256, iterations);
-    std::fill(safeValue->begin(), safeValue->end(), 0);
-    std::string encryptedHash = encrypt(generateHash(tSafeKey));
-    saveHashAndSalt(defaultFile, encryptedHash);
+    std::string passwordHash = generateHash(privKey);
+    saveHashAndSalt(defaultFile, passwordHash);
 }
 cryptography::cryptography(): saltKey(32),privKey(32){}
 
-bool cryptography::login(int iter, const std::string& keyFile, std::string* password, std::string* safeValue){
+bool cryptography::login(int iter, const std::string& keyFile, std::string* password){
     iterations = iter;
-
-    CryptoPP::SecByteBlock encryptedHash = this->retrieveHashAndSalt(keyFile);
     privKey.Assign(generateKey(*password, S256, iterations));
-
     std::fill(password->begin(), password->end(), 0);
-
-    CryptoPP::SecByteBlock tSafeKey = generateKey(*safeValue, S256, iterations);
-
-    std::fill(safeValue->begin(), safeValue->end(), 0);
-    if(generateHash(tSafeKey).compare(decrypt(reinterpret_cast<const char*>(encryptedHash.BytePtr()))) == 0){
-        
+    
+    CryptoPP::SecByteBlock passwordHash = this->retrieveHashAndSalt(keyFile);
+    std::string passwordHashStr(reinterpret_cast<const char*>(passwordHash.data()), passwordHash.size());
+    if(generateHash(privKey).compare(passwordHashStr) == 0){
         return true;
-    }
-    else{
-        return false;
     }
     return false;
 }

@@ -50,39 +50,23 @@ int main(){
     cryptography* crypto;
 
     if(!doesFileExist("keys.bin")){
-        std::string password = "your_password";
-        std::string TFA = "universe";
+        std::string password = "universe";
         std::cout << "Digit a password!\n>> ";
         std::cin >> password;
-        std::cout << "Do you wish to set Two Factor Auth Key?\n>> ";
-        std::string confirmation;
-        std::cin >> confirmation;
-        if(confirmation.compare("yes") == 0 || 
-        confirmation.compare("Yes") == 0 || 
-        confirmation.compare("Y") == 0|| 
-        confirmation.compare("YES") == 0 ||
-        confirmation.compare("y") == 0){
-            std::cout << "Digit a TFA key!\n>> ";
-            std::cin >> TFA;
-        }
-        crypto = new cryptography(600000,&password,&TFA);
+        crypto = new cryptography(600000,&password);
         std::cout << "Keep keys.bin saved AND your password!!\n";
     }
     else{
         crypto = new cryptography();
         while(true){
-            std::string password = "your_password";
-            std::string TFA = "universe";
-            std::string TFAL = "";
+            std::string password = "universe";
             std::cout << "Digit your password!\n>> ";
-            std::cin >> password;
-            getchar();
-            std::cout << "If you have a TFA key, digit it, otherwise, press enter.\n>> ";
-            std::getline(std::cin, TFAL);
-            if(!TFAL.empty()){
-                TFA = TFAL;
+            std::string passwordTemp;
+            std::getline(std::cin, passwordTemp);
+            if(!passwordTemp.empty()){
+                password = passwordTemp;
             }
-            if(crypto->login(600000, "keys.bin", &password, &TFA)){
+            if(crypto->login(600000, "keys.bin", &password)){
                 break;
             }
             else{
