@@ -14,6 +14,38 @@ std::string removeQuotes(const std::string& str) {
     return result;
 }
 
+std::string func(std::string input, std::string aux, std::string removal, bool shouldRemove){
+    std::string file;
+    std::string path;
+
+    size_t slashIndex = input.find_last_of("/\\");
+    if (slashIndex != std::string::npos) {
+        file = input.substr(slashIndex + 1);
+        path = input.substr(0, slashIndex + 1);
+    }
+    else{
+        file = input;
+    }
+    std::string finalFilePath;
+
+    if(shouldRemove){
+        if (file.substr(0, 4) == removal)
+                {
+                    std::string tempFileSTR = file;
+                    tempFileSTR.erase(0, 4);
+                    finalFilePath = path + aux + tempFileSTR;
+                    
+                }
+                else{
+                    finalFilePath = path + aux + file;
+                }
+    }
+    else{
+        finalFilePath = path + aux + file;
+    }
+    return finalFilePath;
+}
+
 int main(){
     cryptography* crypto;
 
@@ -67,9 +99,6 @@ int main(){
         std::string inputFile;
         std::string encryptedFile;
         std::string decryptedFile;
-        std::string file;
-        std::string path;
-        size_t slashIndex;
 
         switch (x){
             case 0:
@@ -83,17 +112,7 @@ int main(){
                 std::cout << "Choose a file to be encrypted.\n >";
                 std::cin >> inputFile;
                 inputFile = removeQuotes(inputFile);
-                slashIndex = inputFile.find_last_of("/\\");
-                if (slashIndex != std::string::npos) {
-                    file = inputFile.substr(slashIndex + 1);
-                    path = inputFile.substr(0, slashIndex + 1);
-                }
-                else{
-                    file = inputFile;
-                }
-
-                encryptedFile = path + "enc_" + file;
-                std::cout << encryptedFile << std::endl;
+                encryptedFile = func(inputFile, "enc_", "", false);
                 crypto->encryptFile(inputFile, encryptedFile);
                 std::cout << "File encrypted." << std::endl;
                 break;
@@ -103,25 +122,8 @@ int main(){
                 std::cout << "Choose a file to be decrypted.\n >";
                 std::cin >> encryptedFile;
                 encryptedFile = removeQuotes(encryptedFile);
-                slashIndex = encryptedFile.find_last_of("/\\");
-                if (slashIndex != std::string::npos) {
-                    file = encryptedFile.substr(slashIndex + 1);
-                    path = encryptedFile.substr(0, slashIndex + 1);
-                }
-                else{
-                    file = encryptedFile;
-                }
+                decryptedFile = func(encryptedFile, "dec_", "enc_", true);
 
-                if (file.substr(0, 4) == "enc_")
-                {
-                    std::string tempFileSTR = file;
-                    tempFileSTR.erase(0, 4);
-                    decryptedFile = path + "dec_" + tempFileSTR;
-                    
-                }
-                else{
-                    decryptedFile = path + "dec_" + file;
-                }
                 crypto->decryptFile(encryptedFile, decryptedFile);
                 std::cout << "File decrypted." << std::endl;
                 break;

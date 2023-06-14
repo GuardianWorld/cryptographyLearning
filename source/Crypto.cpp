@@ -102,24 +102,6 @@ CryptoPP::SecByteBlock cryptography::retrieveHashAndSalt(const std::string& file
     return storedKey;
 }
 
-/*void cryptography::recoverSaltFromFile(const std::string& filename){
-    std::ifstream file(filename, std::ios::binary);
-    if (!file)
-    {
-        std::cerr << "Failed to open file for reading: " << filename << std::endl;
-        return;
-    }
-    try
-    {
-        CryptoPP::FileSource fs(filename.c_str(),true, new CryptoPP::ArraySink(saltKey.begin(), saltKey.size()));
-        std::cout << "Data read from file: " << filename << std::endl;
-    }
-    catch (const CryptoPP::Exception& ex)
-    {
-        std::cerr << "Failed to read data from file: " << ex.what() << std::endl;
-    }
-}*/
-
 CryptoPP::SecByteBlock cryptography::getSalt(){
     return saltKey;
 }
