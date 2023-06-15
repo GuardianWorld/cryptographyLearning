@@ -61,16 +61,15 @@ int main(){
         while(true){
             std::string password = "universe";
             std::cout << "Digit your password!\n>> ";
-            std::string passwordTemp;
-            std::getline(std::cin, passwordTemp);
-            if(!passwordTemp.empty()){
-                password = passwordTemp;
+            std::getline(std::cin, password);
+            if(password.empty()){
+                password = "universe";
             }
             if(crypto->login(600000, "keys.bin", &password)){
                 break;
             }
             else{
-                std::cerr << "Error! Digit a valid Password and TFA Key\n";
+                std::cerr << "Error! Digit a valid Password\n";
             }
         }
     }

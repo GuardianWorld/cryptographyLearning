@@ -12,10 +12,9 @@ cryptography::cryptography(): saltKey(32),privKey(32){}
 
 bool cryptography::login(int iter, const std::string& keyFile, std::string* password){
     iterations = iter;
+    CryptoPP::SecByteBlock passwordHash = this->retrieveHashAndSalt(keyFile);
     privKey.Assign(generateKey(*password, S256, iterations));
     std::fill(password->begin(), password->end(), 0);
-    
-    CryptoPP::SecByteBlock passwordHash = this->retrieveHashAndSalt(keyFile);
     std::string passwordHashStr(reinterpret_cast<const char*>(passwordHash.data()), passwordHash.size());
     if(generateHash(privKey).compare(passwordHashStr) == 0){
         return true;
